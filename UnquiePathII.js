@@ -30,9 +30,15 @@ function uniquePath(Input){
             // Dead end
             rowData[idx] = 0;
         } else {
-            if (idx < m || idx % m === 0) {
-                // Top or Left
-                rowData[idx] = 1;
+			if (idx === "0") {
+				// Start
+				rowData[idx] = 1;
+			} else if (idx < m ) {
+				// Top
+				rowData[idx] = rowData[idx - 1];
+			} else if (idx % m === 0) {
+				// Left
+				rowData[idx] = rowData[idx - m];
             } else {
                 // Other
                 rowData[idx] = rowData[idx - 1] + rowData[idx - m];
@@ -50,17 +56,34 @@ function uniquePathRecursive(Input) {
     
     // # Recursive function
     function countPath(Arr, index, width) {
-        if (index < width || index % width === 0) {
-            // Top or left
-            return 1;
-        } else if (Arr[index] === 1){
-            // Dead road
-            return 0;
-        }
+		if (index === 0) {
+			// Start
+			return 1;
+		} else if (Arr[index] === 1){
+			// Dead road
+			return 0;
+		} else if (index < width) {
+            // Top
+            return countPath(Arr, index-1, width);
+        } else if (index % width === 0) {
+			// Left
+			return countPath(Arr, index-width, width);
+		}
         // Common situation
         return countPath(Arr, index-1, width) + countPath(Arr, index-width, width);
     }
 }
+
+function startTest() {
+	// [[0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 0]]
+	// [0, 1, 0, 0, 0], [1, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]
+	// [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 1], [0, 0, 0, 1, 0]
+	const input = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 1], [0, 0, 0, 1, 0]];
+	document.getElementById('uniquePath').innerHTML = `
+		uniquePath: ${uniquePath(input)} <br>
+		uniquePathRecursive: ${uniquePathRecursive(input)}
+	`
+};
 
 // # For test
 // console.log(uniquePath([[0, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 0]]));
